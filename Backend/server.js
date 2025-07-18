@@ -124,6 +124,11 @@ connectWithRetry().catch(err => {
 });
 
 // Health check endpoint
+const express = require('express');
+const app = express();
+const pool = require('./db'); // Adjust path if needed
+
+// ✅ Health check route
 app.get('/healthcheck', async (req, res) => {
   try {
     await pool.query('SELECT 1');
@@ -141,15 +146,16 @@ app.get('/healthcheck', async (req, res) => {
   }
 });
 
-// 🔥 Your profile route — define it separately
+// ✅ Profile route
 app.get('/profile', (req, res) => {
   res.send("Profile route is working!");
 });
 
-// Start server
+// ✅ Start server
 app.listen(8006, () => {
   console.log('Server running on port 8006');
 });
+
 
 // Signup route
 app.post('/api/signup', upload.single('profileImage'), async (req, res) => {
