@@ -161,24 +161,28 @@ app.post('/api/signup', upload.single('profileImage'), async (req, res) => {
 });
 
 // Login route
-app.get('/profile', async (req, res) => {
-  const userId = req.query.userId;
-
-  if (!userId) {
-    return res.status(400).json({ error: 'User ID is required' });
-  }
-
+app.post('/api/login', async (req, res) => {
   try {
-    const result = await pool.query('SELECT id, name, email FROM users WHERE id = $1', [userId]);
-
+    const { email, password } = req.body;
+    // CHANGE: Added logging to debug received data
+    console.log('Login attempt:', { email, password });
+    const result = await pool.query('SELECT * FROM users WHERE email = $1', [email]);
+    // CHANGE: Added logging to check query result
+    console.log('Database query result:', result.rows);
     if (result.rows.length === 0) {
-      return res.status(404).json({ error: 'User not found' });
+      return res.status(401).json({ error: 'Invalid credentials' });
     }
-
-    res.json(result.rows[0]);
+    const user = result.rows[0];
+    const isValid = await bcrypt.compare(password, user.password);
+    // CHANGE: Added logging to check password comparison
+    console.log('Password valid:', isValid);
+    if (!isValid) {
+      return res.status(401).json({ error: 'Invalid credentials' });
+    }
+    res.json({ message: 'Login successful', userId: user.id });
   } catch (err) {
-    console.error('Profile fetch error:', err);
-    res.status(500).json({ error: 'Failed to fetch profile' });
+    console.error('Login error:', err);
+    res.status(500).json({ error: 'Failed to login' });
   }
 });
 
