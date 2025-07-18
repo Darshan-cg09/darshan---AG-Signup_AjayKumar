@@ -549,7 +549,7 @@
                 if (data.message) {
                     showAlert('success', data.message);
                     setTimeout(() => {
-                        window.location.href = '/profile';
+                        window.location.href = 'http://51.20.65.33:3005/profile';
                     }, 3000);
                 } else {
                     errorMessage.textContent = data.error || 'Login failed';
