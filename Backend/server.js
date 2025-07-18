@@ -123,11 +123,6 @@ connectWithRetry().catch(err => {
   process.exit(1);
 });
 
-// Health check endpoint
-const express = require('express');
-const app = express();
-const pool = require('./db'); // Adjust path if needed
-
 // ✅ Health check route
 app.get('/healthcheck', async (req, res) => {
   try {
