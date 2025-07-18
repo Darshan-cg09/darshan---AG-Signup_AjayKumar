@@ -124,7 +124,7 @@ connectWithRetry().catch(err => {
 });
 
 // Health check endpoint
-app.get('/api/health', async (req, res) => {
+app.get('/healthcheck', async (req, res) => {
   try {
     await pool.query('SELECT 1');
     res.json({
@@ -139,6 +139,16 @@ app.get('/api/health', async (req, res) => {
       error: err.message
     });
   }
+});
+
+// 🔥 Your profile route — define it separately
+app.get('/profile', (req, res) => {
+  res.send("Profile route is working!");
+});
+
+// Start server
+app.listen(8006, () => {
+  console.log('Server running on port 8006');
 });
 
 // Signup route
